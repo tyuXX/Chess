@@ -51,6 +51,15 @@ body {
     background-color: var(--highlight-square);
 }
 
+.square.selected {
+    background-color: rgba(255, 255, 0, 0.3);
+}
+
+.square.valid-move {
+    background-color: rgba(0, 255, 0, 0.3);
+    cursor: pointer;
+}
+
 .piece {
     width: 60px;
     height: 60px;
