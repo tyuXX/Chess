@@ -2,6 +2,16 @@
     --light-square: #f0d9b5;
     --dark-square: #b58863;
     --highlight-square: rgba(255, 255, 0, 0.4);
+    --background-color: #f0f0f0;
+    --text-color: #333;
+}
+
+:root.dark-mode {
+    --light-square: #4a4a4a;
+    --dark-square: #2c2c2c;
+    --highlight-square: rgba(255, 255, 0, 0.3);
+    --background-color: #121212;
+    --text-color: #e0e0e0;
 }
 
 body {
@@ -11,7 +21,9 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .chess-container {
@@ -173,5 +185,27 @@ body {
 }
 
 .move-log-actions button:hover {
+    background-color: #45a049;
+}
+
+.dark-mode-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.dark-mode-toggle:hover {
     background-color: #45a049;
 }

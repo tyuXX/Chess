@@ -6,6 +6,7 @@ class ChessGame {
         this.moveLog = document.getElementById('move-log');
         this.exportMovesBtn = document.getElementById('export-moves-btn');
         this.copyMovesBtn = document.getElementById('copy-moves-btn');
+        this.darkModeToggle = document.getElementById('dark-mode-toggle');
         
         this.currentPlayer = 'white';
         this.selectedPiece = null;
@@ -52,6 +53,12 @@ class ChessGame {
         this.resetButton.addEventListener('click', () => this.resetGame());
         this.exportMovesBtn.addEventListener('click', () => this.exportMoves());
         this.copyMovesBtn.addEventListener('click', () => this.copyMoves());
+        this.darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
+        
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            this.enableDarkMode();
+        }
         
         this.initializeBoard();
     }
@@ -243,6 +250,24 @@ class ChessGame {
         }).catch(err => {
             console.error('Failed to copy moves: ', err);
         });
+    }
+    
+    toggleDarkMode() {
+        if (document.documentElement.classList.contains('dark-mode')) {
+            this.disableDarkMode();
+        } else {
+            this.enableDarkMode();
+        }
+    }
+    
+    enableDarkMode() {
+        document.documentElement.classList.add('dark-mode');
+        localStorage.setItem('darkMode', 'enabled');
+    }
+    
+    disableDarkMode() {
+        document.documentElement.classList.remove('dark-mode');
+        localStorage.setItem('darkMode', null);
     }
     
     initializeBoard() {
