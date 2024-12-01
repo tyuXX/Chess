@@ -3,9 +3,14 @@ class ChessGame {
         this.board = document.getElementById('board');
         this.turnIndicator = document.getElementById('turn-indicator');
         this.resetButton = document.getElementById('reset-btn');
+        this.moveLog = document.getElementById('move-log');
+        this.exportMovesBtn = document.getElementById('export-moves-btn');
+        this.copyMovesBtn = document.getElementById('copy-moves-btn');
         
         this.currentPlayer = 'white';
         this.selectedPiece = null;
+        this.moveHistory = [];
+        this.moveCounter = 1;
         
         this.pieces = {
             'white-king': 'pieces/wK.svg', 
@@ -22,6 +27,15 @@ class ChessGame {
             'black-pawn': 'pieces/bP.svg'
         };
         
+        this.pieceNotation = {
+            'king': 'K',
+            'queen': 'Q',
+            'rook': 'R',
+            'bishop': 'B',
+            'knight': 'N',
+            'pawn': ''
+        };
+        
         this.initialBoard = [
             ['black-rook', 'black-knight', 'black-bishop', 'black-queen', 'black-king', 'black-bishop', 'black-knight', 'black-rook'],
             ['black-pawn', 'black-pawn', 'black-pawn', 'black-pawn', 'black-pawn', 'black-pawn', 'black-pawn', 'black-pawn'],
@@ -36,8 +50,27 @@ class ChessGame {
         this.boardState = JSON.parse(JSON.stringify(this.initialBoard));
         
         this.resetButton.addEventListener('click', () => this.resetGame());
+        this.exportMovesBtn.addEventListener('click', () => this.exportMoves());
+        this.copyMovesBtn.addEventListener('click', () => this.copyMoves());
         
         this.initializeBoard();
+    }
+    
+    convertToAlgebraicNotation(fromRow, fromCol, toRow, toCol, piece, isCapture = false) {
+        const files = 'abcdefgh';
+        const ranks = '87654321';
+        
+        const fromFile = files[fromCol];
+        const fromRank = ranks[fromRow];
+        const toFile = files[toCol];
+        const toRank = ranks[toRow];
+        
+        const pieceName = piece.split('-')[1];
+        const pieceNotation = this.pieceNotation[pieceName];
+        
+        // Basic move notation
+        const captureSymbol = isCapture ? 'x' : '';
+        return `${pieceNotation}${fromFile}${fromRank}${captureSymbol}${toFile}${toRank}`;
     }
     
     isValidMove(fromRow, fromCol, toRow, toCol) {
@@ -161,6 +194,57 @@ class ChessGame {
         return validMoves;
     }
     
+    logMove(fromRow, fromCol, toRow, toCol, piece) {
+        const isCapture = this.boardState[toRow][toCol] !== null;
+        const moveNotation = this.convertToAlgebraicNotation(fromRow, fromCol, toRow, toCol, piece, isCapture);
+        
+        const moveEntry = document.createElement('li');
+        const color = piece.split('-')[0];
+        
+        if (color === 'white') {
+            moveEntry.innerHTML = `
+                <span class="move-number">${this.moveCounter}.</span>
+                <span class="white-move">${moveNotation}</span>
+            `;
+        } else {
+            const lastMove = this.moveLog.lastElementChild;
+            if (lastMove) {
+                lastMove.innerHTML += `
+                    <span class="black-move">${moveNotation}</span>
+                `;
+            }
+            this.moveCounter++;
+        }
+        
+        this.moveHistory.push(moveNotation);
+        this.moveLog.appendChild(moveEntry);
+        
+        // Scroll to the bottom of the move log
+        this.moveLog.scrollTop = this.moveLog.scrollHeight;
+    }
+    
+    exportMoves() {
+        const moveText = this.moveHistory.join(' ');
+        const blob = new Blob([moveText], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'chess_moves.txt';
+        a.click();
+        
+        URL.revokeObjectURL(url);
+    }
+    
+    copyMoves() {
+        const moveText = this.moveHistory.join(' ');
+        navigator.clipboard.writeText(moveText).then(() => {
+            alert('Moves copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy moves: ', err);
+        });
+    }
+    
     initializeBoard() {
         this.board.innerHTML = '';
         for (let row = 0; row < 8; row++) {
@@ -215,6 +299,9 @@ class ChessGame {
         
         // Check if the move is valid
         if (this.isValidMove(fromRow, fromCol, toRow, toCol)) {
+            // Log the move before updating the board
+            this.logMove(fromRow, fromCol, toRow, toCol, piece);
+            
             this.boardState[toRow][toCol] = piece;
             this.boardState[fromRow][fromCol] = null;
             
@@ -242,6 +329,9 @@ class ChessGame {
         this.currentPlayer = 'white';
         this.turnIndicator.textContent = "White's Turn";
         this.selectedPiece = null;
+        this.moveHistory = [];
+        this.moveCounter = 1;
+        this.moveLog.innerHTML = ''; // Clear move log
         this.initializeBoard();
     }
 }

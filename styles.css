@@ -16,9 +16,10 @@ body {
 
 .chess-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
     gap: 20px;
+    padding: 20px;
 }
 
 .chessboard {
@@ -99,5 +100,78 @@ body {
 }
 
 #reset-btn:hover {
+    background-color: #45a049;
+}
+
+.move-log-container {
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    padding: 15px;
+    width: 250px;
+    max-height: 560px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.move-log-container h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.move-log {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.move-log li {
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.move-log li:last-child {
+    border-bottom: none;
+}
+
+.move-log .move-number {
+    font-weight: bold;
+    color: #666;
+    margin-right: 10px;
+}
+
+.move-log .white-move {
+    color: #333;
+}
+
+.move-log .black-move {
+    color: #666;
+}
+
+.move-log-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.move-log-actions button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.move-log-actions button:hover {
     background-color: #45a049;
 }
